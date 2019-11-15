@@ -267,7 +267,7 @@ int main()
       }
     }
   }
-  cout <<"area:" <<area;
+  cout <<"area: " <<area;
 
   return 0;
 }
