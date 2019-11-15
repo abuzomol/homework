@@ -158,8 +158,7 @@ struct interval
   interval() : x_start(0), x_end() {}
   interval(int start, int end) : x_start(start), x_end(end) {}
 
-  // order by x_start
-  bool operator<(const interval& other) { return x_start <= other.x_start; }
+
 };
 // displayInterval
 void displayInterval(vector<interval>& A)
@@ -167,10 +166,15 @@ void displayInterval(vector<interval>& A)
   tr(A, it) cout << it->x_start << " " << it->x_end << endl;
 }
 // order by x_end
-bool compareInterval(interval& x, interval& y) { return x.x_end <= y.x_end; }
+// order by x_start
+bool operator<(const interval& x , const interval& y)
+{
+  return x.x_start <= y.x_start;
+}
+bool compareInterval(const interval& x, const interval& y) { return x.x_end <= y.x_end; }
 
 // interval x intersects y. No containment
-bool intersects(interval& x, interval& y)
+bool intersects(const interval& x, const interval& y)
 {
   bool in1 = x.x_start < y.x_end < x.x_end;
   bool in2 = y.x_start < x.x_end < y.x_end;
@@ -181,7 +185,7 @@ bool intersects(interval& x, interval& y)
   return in1 || in2 || in3 || in4;
 }
 // does x contains y?
-bool contains(interval& x, interval& y)
+bool contains(const interval& x, const interval& y)
 {
   return x.x_start <= y.x_start <= y.x_end <= x.x_end;
 }
@@ -238,32 +242,42 @@ int main()
 
   // Sweep from y max top to least bottom
   ll area = 0;
-  vector<interval> current;
+  set<interval> current;
 
   // sweep from above; sweep from last element in the map
   rtr(rec_map, itt)
   {
+    //get y value
     int y = itt->first;
+    //get intervals related to y
     vector<interval> y_intervals = itt->second.first;
 
     for (int i = 0; i < y_intervals.size(); i++)
     {
-      auto lower = lower_bound(all(current), y_intervals[i]);
+      //find predecessor of interval i
+      auto lower = current.lower_bound( y_intervals[i]);
+      auto upper = current.upper_bound( y_intervals[i]);
+
+      //case current is empty
       if (lower == current.end())
       {
-        current.push_back(y_intervals[i]);
+        current.insert(y_intervals[i]);
       }
       else
       {
-        int xIntervalStart, xIntervalEnd;
+        //case interval i contains the lower interval
         if (contains( y_intervals[i],*lower))
         {
-          xIntervalEnd = lower->x_start;
-          xIntervalStart = lower->x_end;
-          //compute the area of difference regions of bigger interval y_interval[i]
-          area += (xIntervalEnd - y_intervals[i].x_start )*y;
-          area += (y_intervals[i].x_end - xIntervalStart )*y;
+          //compute the area of fragmented intervals
+          area += (lower->x_start - y_intervals[i].x_start )*y;
+          area += (y_intervals[i].x_end - lower->x_end )*y;
         }
+        if (!intersects(*lower, y_intervals[i]) && !intersects(*upper, y_intervals[i] ))
+        {
+          current.insert(y_intervals[i]);
+          area+= y_intervals[i].x_end - y_intervals[i].x_start   ;
+        }
+
       }
     }
   }
