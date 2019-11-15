@@ -14,22 +14,24 @@ typedef vector<ll> vll;
 #define na(x) ((x) < P ? (x) : (x)-P)
 
 #define all(c) (c).begin(), (c).end()
-#define tr(c, i)                                                               \
+#define tr(c, i) \
   for (decltype((c).begin()) i = (c).begin(); i != (c).end(); i++)
-#define rtr(c, i)                                                              \
+#define rtr(c, i) \
   for (decltype((c).rbegin()) i = (c).rbegin(); i != (c).rend(); i++)
 #define pb push_back
 #define mp make_pair
 
 double EPS = 1e-9;
 
-struct point_i {
+struct point_i
+{
   int x, y;
   // constructors
   point_i() { x = y = 0; }
   point_i(int _x, int _y) : x(_x), y(_y) {}
   // sort lexicographically by x coordinates, first and then by y-coordinate
-  bool operator<(point_i other) const {
+  bool operator<(point_i other) const
+  {
     if (x != other.x)
       return (x < other.x);
     else
@@ -38,18 +40,21 @@ struct point_i {
 };
 
 // More precise point location.
-struct point {
+struct point
+{
   double x, y;
   point() { x = y = 0.0; }
   point(double _x, double _y) : x(_x), y(_y) {}
 
-  bool operator<(point other) const {
+  bool operator<(point other) const
+  {
     if (fabs(x - other.x) > EPS)
       return x < other.x;
     else
       return y < other.y;
   }
-  bool operator==(point other) {
+  bool operator==(point other)
+  {
     return (fabs(x - other.x < EPS)) && (fabs(y - other.y) < EPS);
   }
 };
@@ -60,32 +65,39 @@ double DEG_to_RAD(double theta);
 
 double rotate(point p, double theta) { double rad = DEG_to_RAD(theta); }
 
-double DEG_to_RAD(double theta) {
+double DEG_to_RAD(double theta)
+{
   double pi = 3.14159265358979323846;
   return theta * pi / 180;
 }
 
 // rectangle with integer coordinates
-struct rectangle_i {
+struct rectangle_i
+{
   int x_start, x_end, y;
   rectangle_i() { x_start = x_end = y = 0; }
   rectangle_i(int _x_start, int _x_end, int _y)
-      : x_start(_x_start), x_end(_x_end), y(_y) {}
+      : x_start(_x_start), x_end(_x_end), y(_y)
+  {
+  }
 
   bool operator<(rectangle_i other) { return x_start < other.x_start; }
 };
 // compare based on x_end
-bool compareRectangle(rectangle_i a, rectangle_i b) {
+bool compareRectangle(rectangle_i a, rectangle_i b)
+{
   return a.x_end < b.x_end;
 }
 
 bool intersects(rectangle_i a, rectangle_i b) { return a.x_end > b.x_start; }
 
-bool contains(rectangle_i a, rectangle_i b) {
+bool contains(rectangle_i a, rectangle_i b)
+{
   return (a.x_start <= b.x_start) && (a.x_end >= b.x_end);
 }
 
-void display(vector<rectangle_i> &A) {
+void display(vector<rectangle_i>& A)
+{
   tr(A, it) cout << (*it).x_start << " " << (*it).x_end << " " << (*it).y
                  << endl;
 }
@@ -138,7 +150,8 @@ i< L.size(); i++)
     //return ll(0);*/
 //}
 
-struct interval {
+struct interval
+{
   int x_start;
   int x_end;
 
@@ -146,17 +159,19 @@ struct interval {
   interval(int start, int end) : x_start(start), x_end(end) {}
 
   // order by x_start
-  bool operator<(const interval &other) { return x_start <= other.x_start; }
+  bool operator<(const interval& other) { return x_start <= other.x_start; }
 };
 // displayInterval
-void displayInterval(vector<interval> &A) {
+void displayInterval(vector<interval>& A)
+{
   tr(A, it) cout << it->x_start << " " << it->x_end << endl;
 }
 // order by x_end
-bool compareInterval(interval &x, interval &y) { return x.x_end <= y.x_end; }
+bool compareInterval(interval& x, interval& y) { return x.x_end <= y.x_end; }
 
 // interval x intersects y. No containment
-bool intersects(interval &x, interval &y) {
+bool intersects(interval& x, interval& y)
+{
   bool in1 = x.x_start < y.x_end < x.x_end;
   bool in2 = y.x_start < x.x_end < y.x_end;
 
@@ -166,11 +181,14 @@ bool intersects(interval &x, interval &y) {
   return in1 || in2 || in3 || in4;
 }
 // does x contains y?
-bool contains(interval &x, interval &y) {
+bool contains(interval& x, interval& y)
+{
   return x.x_start <= y.x_start <= y.x_end <= x.x_end;
 }
-void displayMap(map<int, pair<vector<interval>, vector<interval>>> &rec_map) {
-  tr(rec_map, itt) {
+void displayMap(map<int, pair<vector<interval>, vector<interval>>>& rec_map)
+{
+  tr(rec_map, itt)
+  {
     cout << itt->first << " " << endl;
     cout << "x_start" << endl;
     displayInterval(itt->second.first);
@@ -179,9 +197,10 @@ void displayMap(map<int, pair<vector<interval>, vector<interval>>> &rec_map) {
     cout << "-------------------" << endl;
   }
 }
-int main() {
+int main()
+{
   freopen("input.txt", "r", stdin);
-  freopen("output.txt", "w", stdout);
+  //freopen("output.txt", "w", stdout);
 
   int n;
   cin >> n;
@@ -189,26 +208,30 @@ int main() {
   map<int, pair<vector<interval>, vector<interval>>> rec_map;
   int y;
 
-  for (int i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i)
+  {
     interval t;
     cin >> t.x_start >> t.x_end >> y;
 
     auto it = rec_map.find(y);
 
-    if (it == rec_map.end()) // case y is not in map yet
+    if (it == rec_map.end())  // case y is not in map yet
     {
       vector<interval> temp, tempp;
       temp.pb(t);
-      tempp.pb(t); // copy of temp
+      tempp.pb(t);  // copy of temp
       rec_map.insert(mp(y, mp(temp, tempp)));
-    } else { // case y is already in the map
+    }
+    else
+    {  // case y is already in the map
       rec_map[y].first.pb(t);
       rec_map[y].second.pb(t);
     }
   }
-  tr(rec_map, itt) {
-    sort(all(itt->second.first));                   // order by x_start
-    sort(all(itt->second.second), compareInterval); // order by y_start
+  tr(rec_map, itt)
+  {
+    sort(all(itt->second.first));                    // order by x_start
+    sort(all(itt->second.second), compareInterval);  // order by y_start
   }
 
   displayMap(rec_map);
@@ -218,19 +241,33 @@ int main() {
   vector<interval> current;
 
   // sweep from above; sweep from last element in the map
-  rtr(rec_map, itt) {
+  rtr(rec_map, itt)
+  {
     int y = itt->first;
-    vector<interval> v = itt->second.first;
+    vector<interval> y_intervals = itt->second.first;
 
-    for (int i = 0; i < v.size(); i++) {
-      auto lower = lower_bound(all(current), v[i]);
-      if (lower == current.end()) {
-        current.push_back(v[i]);
-      } else {
-
+    for (int i = 0; i < y_intervals.size(); i++)
+    {
+      auto lower = lower_bound(all(current), y_intervals[i]);
+      if (lower == current.end())
+      {
+        current.push_back(y_intervals[i]);
+      }
+      else
+      {
+        int xIntervalStart, xIntervalEnd;
+        if (contains( y_intervals[i],*lower))
+        {
+          xIntervalEnd = lower->x_start;
+          xIntervalStart = lower->x_end;
+          //compute the area of difference regions of bigger interval y_interval[i]
+          area += (xIntervalEnd - y_intervals[i].x_start )*y;
+          area += (y_intervals[i].x_end - xIntervalStart )*y;
+        }
       }
     }
   }
+  cout <<"area:" <<area;
 
   return 0;
 }
