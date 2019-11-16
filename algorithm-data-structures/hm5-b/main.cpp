@@ -37,7 +37,7 @@ int main() {
   //array to store x_values along with their rectangles
   vector < pair<int, rectangle_i> > x_values;
 
-  for(int i = 0 ; i < n ; i++)
+  for(unsigned int i = 0 ; i < n ; i++)
   {
     rectangle_i rectangle;
     cin >> rectangle.x_start >> rectangle.x_end >> rectangle.y ;
@@ -61,7 +61,7 @@ int main() {
     }
     else
     {
-      area += (x_values[i].first - x_values[i-1].first) *sweep.top().y;
+      area +=  ((long long) x_values[i].first - (long long) x_values[i-1].first) * (long long)sweep.top().y;
       //case new rectanlge_i.
       if( x_values[i].first == x_values[i].second.x_start )
         sweep.push(x_values[i].second);
